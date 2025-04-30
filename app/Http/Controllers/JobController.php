@@ -205,18 +205,20 @@ class JobController extends Controller
     
     // View student's job applications
     public function myApplications()
-    {
-        if (Auth::user()->role !== 'mahasiswa') {
-            return redirect()->route('home')->with('error', 'Unauthorized access');
-        }
-        
-        $applications = JobApplication::with(['job.company'])
-            ->where('student_id', Auth::id())
-            ->orderBy('created_at', 'desc')
-            ->get();
-            
-        return view('mahasiswa.my_applications', compact('applications'));
+{
+    if (Auth::user()->role !== 'mahasiswa') {
+        return redirect()->route('home')->with('error', 'Unauthorized access');
     }
+
+    $applications = JobApplication::with(['job.company'])
+        ->where('student_id', Auth::id())
+        ->whereHas('job') // ⬅️ ini penting untuk hanya ambil yang job-nya masih ada
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    return view('mahasiswa.my_applications', compact('applications'));
+}
+
 
     // Admin menyetujui atau menolak job
     public function updateStatus(Request $request, $id) {
