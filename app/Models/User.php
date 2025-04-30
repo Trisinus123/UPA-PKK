@@ -22,6 +22,7 @@ class User extends Authenticatable
         'password',
         'nim',
         'role',
+        'no_hp', // Added phone field
     ];
 
     protected $hidden = [

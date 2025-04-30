@@ -16,10 +16,7 @@ return new class extends Migration
         if (!Schema::hasTable('perusahaan_profiles')) {
             Schema::create('perusahaan_profiles', function (Blueprint $table) {
                 $table->id();
-                $table->foreignId('user_id')->constrained()->onDelete('cascade');
-                $table->string('company_name')->nullable(); 
-                $table->text('alamat')->nullable();        // sebelumnya address
-                $table->string('industry')->nullable();
+                $table->foreignId('user_id')->constrained()->onDelete('cascade');       // sebelumnya address
                 $table->string('website')->nullable();
                 $table->text('deskripsi')->nullable();     // sebelumnya description
                 $table->string('foto')->nullable();         // sebelumnya logo

@@ -13,9 +13,7 @@ class PerusahaanProfile extends Model
     
     protected $fillable = [
         'user_id',
-        'company_name',
         'address',
-        'industry',
         'website',
         'description',
         'logo'

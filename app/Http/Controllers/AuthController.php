@@ -4,30 +4,104 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\MahasiswaProfile;
+use App\Models\PerusahaanProfile;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
-    // Register
-    public function register(Request $request) {
+    // Show registration type selection
+    public function showRegisterSelection()
+    {
+        return view('auth.register');
+    }
+    
+    // Show mahasiswa registration form
+    public function showRegisterMahasiswa()
+    {
+        return view('auth.register_mahasiswa');
+    }
+    
+    // Show perusahaan registration form
+    public function showRegisterPerusahaan()
+    {
+        return view('auth.register_perusahaan');
+    }
+    
+    // Register mahasiswa
+    public function registerMahasiswa(Request $request) 
+    {
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
-            'role' => 'required|in:mahasiswa,perusahaan,admin',
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+            'no_hp' => 'required|string|max:15',
+            'nim' => 'required|string|unique:mahasiswa_profiles,nim',
         ]);
+        
+        DB::beginTransaction();
+        
+        try {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'no_hp' => $request->no_hp,
+                'role' => 'mahasiswa',
+            ]);
+            
+            MahasiswaProfile::create([
+                'user_id' => $user->id,
+                'nim' => $request->nim,
+            ]);
+            
+            DB::commit();
+            
+            return redirect()->route('login')->with('success', 'Registrasi mahasiswa berhasil. Silahkan login.');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return back()->withErrors(['msg' => 'Terjadi kesalahan saat mendaftar: ' . $e->getMessage()]);
+        }
+    }
+    
+    // Register perusahaan
+    public function registerPerusahaan(Request $request) 
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+            'no_hp' => 'required|string|max:15',
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => $request->role,
         ]);
-
-        return response()->json(['message' => 'User registered'], 201);
+        
+        DB::beginTransaction();
+        
+        try {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'no_hp' => $request->no_hp,
+                'role' => 'perusahaan',
+            ]);
+            
+            PerusahaanProfile::create([
+                'user_id' => $user->id,
+                'company_name' => $request->company_name,
+            ]);
+            
+            DB::commit();
+            
+            return redirect()->route('login')->with('success', 'Registrasi perusahaan berhasil. Silahkan login.');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return back()->withErrors(['msg' => 'Terjadi kesalahan saat mendaftar: ' . $e->getMessage()]);
+        }
     }
 
     // Login
@@ -94,4 +168,3 @@ class AuthController extends Controller
         }
     }
 }
-

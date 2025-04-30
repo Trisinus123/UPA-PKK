@@ -59,6 +59,9 @@
           </div>
           <button type="submit" class="btn btn-login mt-3">Login</button>
         </form>
+        <div class="mt-3 text-center">
+          <p>Belum punya akun? <a href="{{ route('register') }}">Daftar disini</a></p>
+        </div>
       </div>
     </div>
   </div>

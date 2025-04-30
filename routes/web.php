@@ -13,11 +13,6 @@ Route::get('/login', function () {
     return view('auth.login');
 })->name('login');
 
-Route::get('/', function () {
-    return view('welcome');
-
-});
-
 Route::get('/about', function () {
     return view('about');
 })->name('about');
@@ -26,9 +21,19 @@ Route::get('/contact', function () {
     return view('contact');
 })->name('contact');
 
+// Registration routes
+Route::get('/register', [AuthController::class, 'showRegisterSelection'])->name('register');
+Route::get('/register/mahasiswa', [AuthController::class, 'showRegisterMahasiswa'])->name('register.mahasiswa');
+Route::get('/register/perusahaan', [AuthController::class, 'showRegisterPerusahaan'])->name('register.perusahaan');
+Route::post('/register/mahasiswa', [AuthController::class, 'registerMahasiswa'])->name('register.mahasiswa.submit');
+Route::post('/register/perusahaan', [AuthController::class, 'registerPerusahaan'])->name('register.perusahaan.submit');
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
 // Autentikasi
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
 // Routes untuk Admin
