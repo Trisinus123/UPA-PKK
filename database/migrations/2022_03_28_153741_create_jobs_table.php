@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('description');
             $table->string('location');
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->string('gambar')->nullable();
             $table->decimal('salary_min', 15, 2)->nullable();
             $table->decimal('salary_max', 15, 2)->nullable();
             $table->text('requirements')->nullable();

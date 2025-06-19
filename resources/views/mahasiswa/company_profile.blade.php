@@ -3,40 +3,40 @@
 @section('content')
 <div class="container">
     <div class="row">
-        <div class="col-md-12 mb-4">
+        <div class="col-md-12 mb-5" style="margin-top: 80px;">
             <div class="card">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0">Company Profile</h4>
+                <div class="card-header text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Profil Perusahaan</h4>
                     <a href="{{ url()->previous() }}" class="btn btn-sm btn-light">
-                        <i class="fas fa-arrow-left mr-1"></i> Back
+                        <i class="fas fa-arrow-left mr-1"></i> Kembali
                     </a>
                 </div>
-                
+
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-3 text-center mb-4">
                             @if($profile && $profile->foto)
-                                <img src="{{ asset('uploads/perusahaan/' . $profile->foto) }}" alt="{{ $company->name }}" 
+                                <img src="{{ asset('storage/' . $company->perusahaanProfile->foto) }}"
                                     class="img-thumbnail rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
                             @else
-                                <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center mb-3" 
+                                <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center mb-3"
                                     style="width: 150px; height: 150px; margin: 0 auto;">
                                     <i class="fas fa-building fa-4x"></i>
                                 </div>
                             @endif
                         </div>
-                        
+
                         <div class="col-md-9">
                             <h2>{{ $company->name }}</h2>
-                            
+
                             @if($profile)
-                                @if($profile->alamat)
-                                    <p><i class="fas fa-map-marker-alt mr-2 text-primary"></i> {{ $profile->alamat }}</p>
+                                @if($profile->alamat_perusahaan)
+                                    <p><i class="fas fa-map-marker-alt mr-2 text-primary"></i> {{ $profile->alamat_perusahaan}}</p>
                                 @endif
-                                
+
                                 @if($profile->deskripsi)
                                     <div class="mt-4">
-                                        <h5>About the Company</h5>
+                                        <h5>Tentang Perusahaan</h5>
                                         <div class="card bg-light">
                                             <div class="card-body">
                                                 {!! nl2br(e($profile->deskripsi)) !!}
@@ -45,7 +45,7 @@
                                     </div>
                                 @endif
                             @else
-                                <p class="text-muted"><i>This company has not completed their profile yet.</i></p>
+                                <p class="text-muted"><i>Profil perusahaan belum dilengkapi.</i></p>
                             @endif
                         </div>
                     </div>
@@ -53,25 +53,26 @@
             </div>
         </div>
     </div>
-    
+
+    {{-- Daftar Lowongan --}}
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Current Job Openings</h4>
+                <div class="card-header text-black">
+                    <h4 class="mb-0">Lowongan Kerja Saat Ini</h4>
                 </div>
-                
+
                 <div class="card-body">
                     @if($jobs->count() > 0)
                         <div class="table-responsive">
                             <table class="table table-hover">
                                 <thead class="thead-light">
                                     <tr>
-                                        <th>Job Title</th>
-                                        <th>Location</th>
-                                        <th>Salary</th>
-                                        <th>Posted</th>
-                                        <th>Action</th>
+                                        <th>Judul Lowongan</th>
+                                        <th>Lokasi</th>
+                                        <th>Gaji</th>
+                                        <th>Diposting</th>
+                                        <th>Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -82,8 +83,8 @@
                                             <td>{{ $job->formatted_salary_range }}</td>
                                             <td>{{ $job->created_at->diffForHumans() }}</td>
                                             <td>
-                                                <a href="{{ route('jobs.show', $job->id) }}" class="btn btn-sm btn-primary">
-                                                    View Details
+                                                <a href="{{ route('jobs.show', $job->id) }}" class="btn btn-sm btn-info">
+                                                    Lihat Detail
                                                 </a>
                                             </td>
                                         </tr>
@@ -93,7 +94,7 @@
                         </div>
                     @else
                         <div class="alert alert-info">
-                            <i class="fas fa-info-circle mr-2"></i> This company currently has no active job openings.
+                            <i class="fas fa-info-circle mr-2"></i> Perusahaan ini belum memiliki lowongan kerja aktif.
                         </div>
                     @endif
                 </div>

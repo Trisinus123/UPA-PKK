@@ -13,7 +13,7 @@ class MahasiswaProfile extends Model
         'user_id',
         'nim',
         'cv',
-        // Add other fields as needed
+        
     ];
 
     public function user()

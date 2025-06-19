@@ -1,156 +1,104 @@
 @extends('layouts.perusahaan')
 
+@section('title', 'Lamaran Pekerjaan - ' . $job->title)
+
 @section('content')
-<div class="container mt-4">
-    <h1>Applications for: {{ $job->title }}</h1>
-    <div class="card mb-4">
-        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-            <span>Job Details</span>
-            <a href="{{ route('applications.index') }}" class="btn btn-sm btn-light">Back to All Jobs</a>
-        </div>
-        <div class="card-body">
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <p><strong>Title:</strong> {{ $job->title }}</p>
-                    <p><strong>Location:</strong> {{ $job->location }}</p>
-                    <p><strong>Status:</strong> 
-                        @if($job->status == 'approved')
-                            <span class="badge bg-success">Approved</span>
-                        @elseif($job->status == 'pending')
-                            <span class="badge bg-warning">Pending</span>
-                        @else
-                            <span class="badge bg-danger">Rejected</span>
-                        @endif
-                    </p>
-                </div>
-                <div class="col-md-6">
-                    <p><strong>Salary Range:</strong> 
-                        @if($job->salary_min && $job->salary_max)
-                            Rp {{ number_format($job->salary_min) }} - Rp {{ number_format($job->salary_max) }}
-                        @elseif($job->salary_min)
-                            From Rp {{ number_format($job->salary_min) }}
-                        @elseif($job->salary_max)
-                            Up to Rp {{ number_format($job->salary_max) }}
-                        @else
-                            Not specified
-                        @endif
-                    </p>
-                    <p><strong>Posted:</strong> {{ $job->created_at->format('M d, Y') }}</p>
-                    <p><strong>Deadline:</strong> {{ $job->deadline ? date('M d, Y', strtotime($job->deadline)) : 'None' }}</p>
-                </div>
-            </div>
-        </div>
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">{{ $job->title }}</h2>
+        <p class="text-secondary fs-5 mb-1">{{ $job->company->name }}</p>
+        <p class="text-muted">{{ $applications->count() }} {{ Str::plural('Lamaran', $applications->count()) }} Diterima</p>
     </div>
-    
-    <div class="card">
-        <div class="card-header bg-primary text-white">
-            <span>Applications ({{ $applications->count() }})</span>
+
+    @if($applications->isEmpty())
+        <div class="alert alert-info text-center rounded-4 py-4 shadow-sm">
+            <i class="fas fa-info-circle me-2 fs-5"></i> Belum ada lamaran yang dikirimkan.
         </div>
-        <div class="card-body">
-            @if($applications->isEmpty())
-                <p class="text-muted">No applications received yet.</p>
-            @else
-                <div class="table-responsive">
-                    <table class="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Applicant</th>
-                                <th>Applied On</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($applications as $application)
-                                <tr>
-                                    <td>
-                                        {{ $application->student->name }}
-                                    </td>
-                                    <td>{{ $application->created_at->format('M d, Y') }}</td>
-                                    <td>
-                                        @if($application->status == 'pending')
-                                            <span class="badge bg-warning">Pending</span>
-                                        @elseif($application->status == 'reviewing')
-                                            <span class="badge bg-info">Reviewing</span>
-                                        @elseif($application->status == 'interview')
-                                            <span class="badge bg-primary">Interview</span>
-                                        @elseif($application->status == 'rejected')
-                                            <span class="badge bg-danger">Rejected</span>
-                                        @elseif($application->status == 'accepted')
-                                            <span class="badge bg-success">Accepted</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#applicantModal{{ $application->id }}">
-                                            View Details
-                                        </button>
-                                    </td>
-                                </tr>
-                                
-                                <!-- Modal for each application -->
-                                <div class="modal fade" id="applicantModal{{ $application->id }}" tabindex="-1" aria-labelledby="applicantModalLabel{{ $application->id }}" aria-hidden="true">
-                                    <div class="modal-dialog modal-lg">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="applicantModalLabel{{ $application->id }}">Applicant: {{ $application->student->name }}</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="row mb-3">
-                                                    <div class="col-md-6">
-                                                        <p><strong>Email:</strong> {{ $application->student->email }}</p>
-                                                        <p><strong>Applied On:</strong> {{ $application->created_at->format('M d, Y') }}</p>
-                                                    </div>
-                                                </div>
-                                                
-                                                @php
-                                                    // Determine if CV is available
-                                                    $resumePath = $application->resume_path;
-                                                    if (!$resumePath && isset($application->student->mahasiswaProfile)) {
-                                                        $resumePath = $application->student->mahasiswaProfile->cv;
-                                                    }
-                                                    $hasCv = !empty($resumePath);
-                                                @endphp
-                                                
-                                                @if($hasCv)
-                                                    <div class="mb-3">
-                                                        <h6>Resume/CV</h6>
-                                                        <div class="btn-group" role="group">
-                                                            <a href="{{ route('applications.cv.view', $application->id) }}" class="btn btn-primary" target="_blank">View CV</a>
-                                                            <a href="{{ route('applications.cv.download', $application->id) }}" class="btn btn-secondary">Download CV</a>
-                                                        </div>
-                                                    </div>
-                                                @endif
-                                                
-                                                <hr>
-                                                <form action="{{ route('applications.update.status', $application) }}" method="POST">
-                                                    @csrf
-                                                    @method('PUT')
-                                                    <div class="mb-3">
-                                                        <label for="status" class="form-label">Update Application Status</label>
-                                                        <select class="form-select" name="status" id="status">
-                                                            <option value="pending" {{ $application->status == 'pending' ? 'selected' : '' }}>Pending</option>
-                                                            <option value="reviewing" {{ $application->status == 'reviewing' ? 'selected' : '' }}>Reviewing</option>
-                                                            <option value="interview" {{ $application->status == 'interview' ? 'selected' : '' }}>Interview</option>
-                                                            <option value="rejected" {{ $application->status == 'rejected' ? 'selected' : '' }}>Reject</option>
-                                                            <option value="accepted" {{ $application->status == 'accepted' ? 'selected' : '' }}>Accept</option>
-                                                        </select>
-                                                    </div>
-                                                    <button type="submit" class="btn btn-primary">Update Status</button>
-                                                </form>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+    @else
+        <div class="d-flex flex-column align-items-center gap-4">
+            @foreach($applications as $application)
+            <div class="card rounded-4 shadow-sm border-0 p-4 w-100" style="max-width: 720px;">
+                {{-- Header --}}
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h4 class="mb-1 fw-semibold">{{ $application->student->name }}</h4>
+                        <small class="text-muted">
+                            Dilamar {{ $application->created_at->diffForHumans() }} 
+                            ({{ $application->created_at->format('d M Y') }})
+                        </small>
+                    </div>
+                    <span class="badge rounded-pill px-3 py-2 fs-6 
+                        {{ $application->status === 'accepted' ? 'bg-success' : 
+                           ($application->status === 'rejected' ? 'bg-danger' : 'bg-warning text-dark') }}">
+                        {{ $application->status === 'accepted' ? 'Diterima' : 
+                           ($application->status === 'rejected' ? 'Ditolak' : 'Menunggu') }}
+                    </span>
+                </div>
+
+                {{-- Kontak --}}
+                <div class="mb-3">
+                    <h6 class="text-muted fw-semibold mb-2"><i class="fas fa-user me-2"></i>Informasi Kontak</h6>
+                    <div class="ps-2">
+                        <p class="mb-1"><strong>Email:</strong> {{ $application->student->email }}</p>
+                        @if($application->student->no_hp)
+                        <p><strong>No. HP:</strong> {{ $application->student->no_hp }}</p>
+                        @endif
+                    </div>
+                </div>
+
+                {{-- Dokumen --}}
+                <div class="mb-3">
+                    <h6 class="text-muted fw-semibold mb-2"><i class="fas fa-file-alt me-2 text-danger"></i>Dokumen</h6>
+                    @if($application->documents->count() > 0)
+                        <ul class="list-unstyled ps-2 mb-0">
+                            @foreach($application->documents as $document)
+                            <li class="mb-2">
+                                <a href="{{ asset('storage/' . $document->file_path) }}" 
+                                   target="_blank" 
+                                   class="text-decoration-none fw-medium">
+                                    <i class="fas fa-file-pdf text-danger me-2"></i>{{ $document->requirement->document_name }}
+                                </a>
+                            </li>
                             @endforeach
-                        </tbody>
-                    </table>
+                        </ul>
+                    @else
+                        <p class="text-muted ps-2">Tidak ada dokumen yang dikirimkan.</p>
+                    @endif
                 </div>
-            @endif
+
+                {{-- Kontak WhatsApp --}}
+                @if($application->status === 'accepted' && $application->student->no_hp)
+                <div class="text-end">
+                    <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $application->student->no_hp) }}"
+                       target="_blank"
+                       class="btn btn-sm btn-outline-success rounded-pill px-4">
+                        <i class="fab fa-whatsapp me-2"></i>Hubungi via WhatsApp
+                    </a>
+                </div>
+                @endif
+            </div>
+            @endforeach
         </div>
-    </div>
+    @endif
 </div>
+
+{{-- Custom CSS --}}
+<style>
+    .card {
+        transition: all 0.3s ease-in-out;
+    }
+
+    .card:hover {
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        transform: translateY(-3px);
+    }
+
+    h4, h6 {
+        font-weight: 600;
+    }
+
+    .badge {
+        font-size: 0.9rem;
+    }
+</style>
 @endsection

@@ -1,62 +1,124 @@
 body {
-    background-color: white;
-    font-family: 'Segoe UI', sans-serif;
-  }
-  
-  .login-container {
-    max-width: 900px;
-    margin: auto;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
-  
+  background-color: #f2f3f5; /* warna abu terang */
+  font-family: 'Segoe UI', sans-serif;
+  padding-top: 100px;
+}
+
+/* Container utama */
+.login-container {
+  max-width: 950px;
+  margin: 0 auto;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #ffffff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Gambar kiri */
+.login-image {
+  background: url('../assets/img/ilustrasi.jpg') no-repeat center;
+  background-size: contain;
+  min-height: 400px;
+  border-right: 1px solid #ffffff;
+}
+
+/* Form login kanan */
+.login-form {
+  padding: 40px 30px;
+  background-color: #f2f3f5;
+}
+
+.login-form h4 {
+  font-size: 26px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  text-align: center;
+  color: #222;
+}
+
+.login-form p {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #666;
+  font-size: 15px;
+}
+
+.login-form .form-label {
+  font-weight: 600;
+  color: #222;
+}
+
+.login-form .form-control {
+  height: 44px;
+  border-radius: 6px;
+  border: 1px solid #ccd2da;
+  font-size: 15px;
+  padding-left: 12px;
+}
+
+.login-form .form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.2);
+}
+
+.form-text {
+  font-size: 13px;
+  color: #555;
+  margin-top: 4px;
+  margin-bottom: 10px;
+}
+
+/* Tombol login */
+.btn-login {
+  width: 100%;
+  background-color: #0d6efd;
+  border: none;
+  color: #fff;
+  font-weight: bold;
+  padding: 12px;
+  font-size: 16px;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+  display: block;
+  margin: 0 auto;
+}
+
+.btn-login:hover {
+  background-color: #0b5ed7;
+}
+
+/* Tombol daftar mahasiswa & perusahaan */
+.btn-register {
+  width: 48%;
+  text-align: center;
+  font-weight: 500;
+  font-size: 14px;
+  border-radius: 6px;
+  padding: 10px;
+  transition: 0.3s;
+  border: 1px solid #0d6efd;
+  color: #0d6efd;
+  background-color: #e7f0ff;
+}
+
+.btn-register:hover {
+  background-color: #0d6efd;
+  color: white;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
   .login-image {
-    background: url('../assets/img/phone.png') no-repeat center;
-    background-size: contain;
-    min-height: 200px;
+    display: none;
   }
-  
-  .login-form {
-    padding: 50px 30px;
-    background-color: #fff;
-  }
-  
-  .login-form h4 {
-    font-weight: bold;
-    margin-bottom: 10px;
-    text-align: center;
-  }
-  
-  .login-form p {
-    text-align: center;
-    margin-bottom: 30px;
-    color: #555;
-  }
-  
-  .form-control {
-    border: 2px solid #000;
-    border-radius: 4px;
+
+  .login-container {
     box-shadow: none;
+    border-radius: 0;
   }
-  
-  .btn-login {
+
+  .btn-register {
     width: 100%;
-    background-color: #0d6efd;
-    border: 1px solid #000;
-    color: #fff;
-    font-weight: bold;
+    margin-bottom: 10px;
   }
-  
-  .btn-login:hover {
-    background-color: #0b5ed7;
-    color: #fff;
-  }
-  
-  @media (max-width: 768px) {
-    .login-image {
-      display: none;
-    }
-  }
-  
+}

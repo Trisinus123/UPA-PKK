@@ -5,7 +5,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header bg-primary text-white">
-                <h4 class="mb-0">My Job Applications</h4>
+                <h4 class="mb-0">Lamaran Pekerjaan Saya</h4>
             </div>
             <div class="card-body">
                 @if(count($applications) > 0)

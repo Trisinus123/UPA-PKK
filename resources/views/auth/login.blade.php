@@ -1,141 +1,155 @@
 @extends('layouts.master-without-nav')
-
 @section('title') UPA landing @endsection
-
 @section('css')
 <link href="{{ URL::asset('build/libs/swiper/swiper-bundle.min.css') }}" rel="stylesheet" type="text/css" />
-@endsection
 
+@endsection
 @section('body')
+
 <body data-bs-spy="scroll" data-bs-target="#navbar-example">
-@endsection
+    @endsection
+    @section('content')
 
-@section('content')
+   <nav class="navbar navbar-expand-lg navbar-landing fixed-top shadow-sm py-3" id="navbar" style="background-color: #ffffff;">
+    <div class="container-fluid custom-container">
+        <!-- Brand -->
+        <a class="navbar-brand d-flex align-items-center" href="{{ url('/') }}">
+            <img src="{{ asset('assets/img/logo.png') }}" alt="UPA PKK Logo" height="60" class="me-2">
+            <span class="fs-3 fw-bold text-primary">UPA <span class="text-danger">PKK</span></span>
+        </a>
 
-<!-- Begin page -->
-<div class="layout-wrapper landing">
-    <nav class="navbar navbar-expand-lg navbar-landing fixed-top job-navbar" id="navbar">
-        <div class="container-fluid custom-container">
-            <a class="navbar-brand" href="{{ url('/') }}">
-                <img src="{{URL::asset('build/images/logo-dark.png')}}" class="card-logo card-logo-dark" alt="logo dark" height="17">
-                <img src="{{URL::asset('build/images/logo-light.png')}}" class="card-logo card-logo-light" alt="logo light" height="17">
-            </a>
-            <button class="navbar-toggler py-0 fs-20 text-body" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                aria-expanded="false" aria-label="Toggle navigation">
-                <i class="mdi mdi-menu"></i>
-            </button>
+        <!-- Toggler -->
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <i class="mdi mdi-menu fs-2 text-primary"></i>
+        </button>
 
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mx-auto mt-2 mt-lg-0" id="navbar-example">
+        <!-- Navbar links -->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mx-auto text-center">
                     <li class="nav-item">
-                        <a class="nav-link active" href="{{ url('/') }}">Home</a>
+                        <a class="nav-link fw-semibold fs-4 {{ Request::is('/') ? 'text-primary' : '' }}"
+                            href="{{ url('/') }}">Beranda</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/#process') }}">Tentang</a>
+                        <a class="nav-link fw-semibold fs-4 {{ Request::is('about') ? 'text-primary' : '' }}"
+                            href="{{ url('/about') }}">Tentang</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/#categories') }}">Contact</a>
+                        <a class="nav-link fw-semibold fs-4 {{ Request::is('contact') ? 'text-primary' : '' }}"
+                            href="{{ url('/contact') }}">Kontak</a>
                     </li>
                 </ul>
-
-                <div>
-                    <a href="/login" class="btn btn-soft-primary">
-                        <i class="ri-user-3-line align-bottom me-1"></i> Login & Register
-                    </a>
-                </div>
             </div>
-        </div>
-    </nav>
 
-    <link rel="stylesheet" href="{{ asset('css/login.css') }}">
-
-    <!-- ✅ Konten Form Login -->
-    <div class="container d-flex align-items-center justify-content-center min-vh-100">
-        <div class="row login-container w-100">
-            <!-- Gambar Kiri -->
-            <div class="col-md-6 login-image d-none d-md-block"></div>
-
-            <!-- Form Login -->
-            <div class="col-md-6 login-form">
-                <h4>Login</h4>
-                <p>Selamat Datang</p>
-
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul class="mb-0">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-
-                <form method="POST" action="{{ route('login') }}">
-                    @csrf
-                    <div class="mb-3">
-                        <label for="login" class="form-label">Email/Nim</label>
-                        <input type="text" class="form-control" id="login" name="login" value="{{ old('login') }}" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
-                    </div>
-                    <button type="submit" class="btn btn-login mt-3">Login</button>
-                </form>
-                <div class="mt-3 text-center">
-                    <p>Belum punya akun? <a href="{{ route('register') }}">Daftar disini</a></p>
-                </div>
+            <!-- Login Button -->
+            <div class="d-flex justify-content-center">
+                <a href="/login" class="btn btn-primary rounded-pill px-4 py-2 fs-5 fw-bold">
+                    <i class="ri-user-3-line me-2 fs-5 align-middle"></i>
+                    <span class="align-middle">Login / Register</span>
+                </a>
             </div>
         </div>
     </div>
+</nav>
 
-    <!-- Start footer -->
-    <footer class="py-5" style="background-color: #0b3558; color: white;">
-        <div class="container">
-            <div class="row justify-content-between">
-                <!-- Kolom 1 -->
-                <div class="col-md-4 mb-4">
-                    <h5 class="fw-bold" style="color: #ccc;">UPA <span style="color: red;">PKK</span></h5>
-                    <p class="mb-1 mt-3">Portal Polinema Career Center</p>
-                    <p>Direktorat Pengembangan Karier dan Mahasiswa<br>Politeknik Negeri Malang</p>
-                </div>
+    <link rel="stylesheet" href="{{ asset('css/login.css') }}">
 
-                <!-- Kolom 2 -->
-                <div class="col-md-3 mb-4">
-                    <h6 class="text-white fw-semibold fs-5">Pranala Terkait</h6>
-                    <ul class="list-unstyled mt-3">
-                        <li><a href="#" class="text-white text-decoration-none">Polinema Official</a></li>
-                        <li><a href="#" class="text-white text-decoration-none">Prasetya Online</a></li>
-                        <li><a href="#" class="text-white text-decoration-none">Polinema TV</a></li>
-                    </ul>
-                </div>
+  <!-- ✅ Konten Form Login -->
+  <div class="container d-flex align-items-center justify-content-center min-vh-100">
+    <div class="row login-container w-100">
+      <!-- Gambar Kiri -->
+      <div class="col-md-6 login-image d-none d-md-block"></div>
 
-                <!-- Kolom 3 -->
-                <div class="col-md-3 mb-4">
-                    <h6 class="text-white fw-semibold fs-5">Umpan Balik</h6>
-                    <ul class="list-unstyled mt-3">
-                        <li><a href="#" class="text-white text-decoration-none">Polinema Care</a></li>
-                        <li><a href="#" class="text-white text-decoration-none">Unit Pengendalian Gratifikasi</a></li>
-                        <li><a href="#" class="text-white text-decoration-none">Whistleblowing System</a></li>
-                    </ul>
-                </div>
+      <!-- Form Login -->
+      <div class="col-md-6 login-form">
+        <h4>Login</h4>
+        <p>Selamat Datang</p>
+
+        @if ($errors->any())
+          <div class="alert alert-danger">
+            <ul class="mb-0">
+              @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+              @endforeach
+            </ul>
+          </div>
+        @endif
+
+        <form method="POST" action="{{ route('login') }}">
+          @csrf
+          <div class="mb-3">
+            <label for="login" class="form-label">NIM / Email</label>
+            <input type="text" class="form-control" id="login" name="login" value="{{ old('login') }}" required>
+            <div class="form-text text-muted">
+              Mahasiswa: Gunakan NIM untuk login<br>
+              Perusahaan: Gunakan Email untuk login
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+          </div>
+          <button type="submit" class="btn btn-login mt-3">Login</button>
+        </form>
+        <div class="mt-3 text-center">
+          <p>Belum punya akun? <a href="{{ route('register') }}">Daftar disini</a></p>
+        </div>
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+          <a href="{{ route('register.mahasiswa') }}" class="btn btn-outline-secondary">Daftar sebagai Mahasiswa</a>
+          <a href="{{ route('register.perusahaan') }}" class="btn btn-outline-secondary">Daftar sebagai Perusahaan</a>
+      </div>
+
+      </div>
+    </div>
+  </div>
+ <!-- Start footer -->
+ <footer class="py-5" style="background-color: #0b3558; color: white;">
+    <div class="container">
+        <div class="row justify-content-between">
+            <!-- Kolom 1 -->
+            <div class="col-md-4 mb-4">
+                <h5 class="fw-bold" style="color: #ccc;">UPA <span style="color: red;">PKK</span></h5>
+                <p class="mb-1 mt-3">Portal Polinema Career Center</p>
+                <p>Direktorat Pengembangan Karier dan Mahasiswa<br>Politeknik Negeri Malang</p>
             </div>
 
-            <hr style="border-color: white;">
+            <!-- Kolom 2 -->
+            <div class="col-md-3 mb-4">
+                <h6 class="text-white fw-semibold fs-5">Pranala Terkait</h6>
+                <ul class="list-unstyled mt-3">
+                    <li><a href="#" class="text-white text-decoration-none">Polinema Official</a></li>
+                    <li><a href="#" class="text-white text-decoration-none">Prasetya Online</a></li>
+                    <li><a href="#" class="text-white text-decoration-none">Polinema TV</a></li>
+                </ul>
+            </div>
 
-            <div class="text-center mt-3">
-                <p class="mb-0">@polinema joss !</p>
+            <!-- Kolom 3 -->
+            <div class="col-md-3 mb-4">
+                <h6 class="text-white fw-semibold fs-5">Umpan Balik</h6>
+                <ul class="list-unstyled mt-3">
+                    <li><a href="#" class="text-white text-decoration-none">Polinema Care</a></li>
+                    <li><a href="#" class="text-white text-decoration-none">Unit Pengendalian Gratifikasi</a></li>
+                    <li><a href="#" class="text-white text-decoration-none">Whistleblowing System</a></li>
+                </ul>
             </div>
         </div>
-    </footer>
-    <!-- end footer -->
 
-    <!--start back-to-top-->
-    <button onclick="topFunction()" class="btn btn-info btn-icon landing-back-top" id="back-to-top">
-        <i class="ri-arrow-up-line"></i>
-    </button>
-    <!--end back-to-top-->
+        <hr style="border-color: white;">
+
+        <div class="text-center mt-3">
+            <p class="mb-0">copyright @UPAPKK 2025 | Trisinus Gulo</p>
+        </div>
+    </div>
+</footer>
+<!-- end footer -->
+
+<!--start back-to-top-->
+<button onclick="topFunction()" class="btn btn-info btn-icon landing-back-top" id="back-to-top">
+    <i class="ri-arrow-up-line"></i>
+</button>
+<!--end back-to-top-->
 
 </div>
 <!-- end layout wrapper -->

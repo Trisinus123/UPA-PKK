@@ -1,52 +1,87 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" href="/student/jobs">Job Portal - Student</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="/student/jobs">Lowongan Kerja</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('student.applications') }}">My Applications</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('companies.browse') }}">Perusahaan</a>
-                    </li>
-                </ul>
-                <div class="dropdown me-3">
-                    <a class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+@extends('layouts.master-without-nav')
+@section('title') Dashboard Mahasiswa @endsection
+
+@section('css')
+<link href="{{ URL::asset('build/libs/swiper/swiper-bundle.min.css') }}" rel="stylesheet" type="text/css" />
+@endsection
+
+@section('body')
+<body data-bs-spy="scroll" data-bs-target="#navbar-example">
+@endsection
+
+@section('content')
+
+<nav class="navbar navbar-expand-lg navbar-landing fixed-top shadow-sm py-3" id="navbar" style="background-color: #ffffff;">
+    <div class="container-fluid custom-container">
+        <!-- Brand -->
+        <a class="navbar-brand d-flex align-items-center">
+            <img src="{{ asset('assets/img/logo.png') }}" alt="UPA PKK Logo" height="60" class="me-2">
+            <span class="fs-3 fw-bold text-primary">UPA <span class="text-danger">PKK</span></span>
+        </a>
+
+        <!-- Toggler -->
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+            aria-expanded="false" aria-label="Toggle navigation">
+            <i class="mdi mdi-menu fs-2 text-primary"></i>
+        </button>
+
+        <!-- Navbar links -->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mx-auto text-center">
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold fs-4 {{ Request::is('student/jobs') ? 'text-primary' : '' }}" href="/student/jobs">Lowongan Kerja</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold fs-4 {{ Request::is('student/applications') ? 'text-primary' : '' }}" href="{{ route('student.applications') }}">Lamaran</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link fw-semibold fs-4 {{ Request::is('companies/browse') ? 'text-primary' : '' }}" href="{{ route('companies.browse') }}">Perusahaan</a>
+                </li>
+            </ul>
+
+            <!-- User dropdown and logout -->
+            <div class="d-flex align-items-center">
+                <div class="dropdown me-2">
+                    <a class="d-flex align-items-center text-black text-decoration-none dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         <strong>{{ Auth::user()->name }}</strong>
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}" alt="profile" class="ms-2 rounded-circle" width="32" height="32">
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}" alt="profile" class="ms-2 rounded-circle" width="40" height="40">
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                         <li><a class="dropdown-item" href="{{ route('mahasiswa.profile') }}">Lihat Profil</a></li>
                     </ul>
                 </div>
-                <form action="{{ route('logout') }}" method="POST" class="d-flex">
-                    @csrf
-                    <button type="submit" class="btn btn-outline-light">Logout</button>
-                </form>
+                <form action="{{ route('logout') }}" method="POST" class="d-flex ms-2">
+                        @csrf
+                        <button type="submit" class="btn btn-primary rounded-pill px-4 py-2 fs-5 fw-bold">
+                            <span class="align-middle">Logout</span>
+                        </button>
+
+                    </form>
             </div>
         </div>
-    </nav>
-
-    <div class="container mt-4">
-        @yield('content')
     </div>
+</nav>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<!-- Your main content sections would go here -->
+
+<!-- Start footer -->
+<footer class="bg-dark text-white mt-5">
+
+
+            <hr style="border-color: white;">
+
+            <div class="text-center mt-3">
+                <p class="mb-0">copyright @UPAPKK 2025 | Trisinus Gulo</p>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- End footer -->
+
+
+
+@section('script')
+<script src="{{ URL::asset('build/libs/swiper/swiper-bundle.min.js') }}"></script>
+<script src="{{ URL::asset('build/js/pages/job-lading.init.js') }}"></script>
+@endsection

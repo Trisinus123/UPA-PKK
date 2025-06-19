@@ -8,8 +8,21 @@ File: Common Plugins Js File
 */
 
 //Common plugins
-if(document.querySelectorAll("[toast-list]") || document.querySelectorAll('[data-choices]') || document.querySelectorAll("[data-provider]")){ 
-  document.writeln("<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/toastify-js'></script>");
-  document.writeln("<script type='text/javascript' src='build/libs/choices.js/public/assets/scripts/choices.min.js'></script>");
-  document.writeln("<script type='text/javascript' src='build/libs/flatpickr/flatpickr.min.js'></script>");    
+if (
+  document.querySelector("[toast-list]") ||
+  document.querySelector("[data-choices]") ||
+  document.querySelector("[data-provider]")
+) {
+  const scripts = [
+    "https://cdn.jsdelivr.net/npm/toastify-js",
+    "build/libs/choices.js/public/assets/scripts/choices.min.js",
+    "build/libs/flatpickr/flatpickr.min.js"
+  ];
+
+  scripts.forEach(src => {
+    const script = document.createElement("script");
+    script.src = src;
+    script.defer = true; // Lebih aman agar script dijalankan setelah parsing selesai
+    document.head.appendChild(script); // Atau document.body.appendChild(script);
+  });
 }

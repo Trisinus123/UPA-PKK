@@ -22,19 +22,19 @@ class MahasiswaController extends Controller
     {
         $user = auth()->user();
         $mahasiswa = $user->mahasiswa;
-        
-        // Create profile if it doesn't exist
+
+        // Membuat profil jika belum ada
         if (!$mahasiswa) {
             $mahasiswa = MahasiswaProfile::create([
                 'user_id' => $user->id,
-                'nim' => $user->nim ?? 'N/A' // Use the NIM from user model if available
+                'nim' => $user->nim ?? 'N/A' // Gunakan NIM dari model user jika tersedia
             ]);
         } else if ($mahasiswa->nim == 'N/A' && $user->nim) {
-            // Update the NIM if user has one but profile doesn't
+            // Perbarui NIM jika user memiliki tapi profil belum
             $mahasiswa->nim = $user->nim;
             $mahasiswa->save();
         }
-        
+
         return view('mahasiswa.profile', compact('mahasiswa'));
     }
 
@@ -43,16 +43,16 @@ class MahasiswaController extends Controller
         $user = Auth::user();
 
         $request->validate([
-            'cv' => 'nullable|mimes:pdf|max:10240', // Changed from 2048 to 10240 (10MB)
+            'cv' => 'nullable|mimes:pdf|max:10240', // Diubah dari 2048 ke 10240 (10MB)
         ]);
 
         if ($request->hasFile('cv')) {
             $file = $request->file('cv');
             $path = $file->store('cv', 'public');
-            
-            // Get existing profile or create new one
+
+            // Ambil profil yang ada atau buat baru
             $mahasiswa = MahasiswaProfile::where('user_id', $user->id)->first();
-            
+
             if ($mahasiswa) {
                 $mahasiswa->cv = $path;
                 $mahasiswa->save();
@@ -63,15 +63,15 @@ class MahasiswaController extends Controller
                     'cv' => $path
                 ]);
             }
-            
+
             return back()->with('success', 'CV berhasil diupload.');
         }
 
         return back()->with('error', 'Gagal mengupload CV.');
     }
-    
+
     /**
-     * Check if the current authenticated user has uploaded a CV
+     * Memeriksa apakah user yang login sudah mengupload CV
      *
      * @return bool
      */
@@ -79,12 +79,12 @@ class MahasiswaController extends Controller
     {
         $user = Auth::user();
         $mahasiswa = MahasiswaProfile::where('user_id', $user->id)->first();
-        
+
         return $mahasiswa && $mahasiswa->cv && $mahasiswa->cv != '';
     }
-    
+
     /**
-     * Process job application with CV upload option
+     * Proses lamaran pekerjaan dengan opsi upload CV
      *
      * @param Request $request
      * @param int $jobId
@@ -95,21 +95,21 @@ class MahasiswaController extends Controller
         $user = Auth::user();
         $cvUpdated = false;
         $resumePath = null;
-        
-        // Check if user has a CV already
+
+        // Cek apakah user sudah memiliki CV
         $mahasiswa = MahasiswaProfile::where('user_id', $user->id)->first();
         $hasExistingCV = $mahasiswa && $mahasiswa->cv && $mahasiswa->cv != '';
-        
-        // Handle new CV upload if provided
+
+        // Handle upload CV baru jika disediakan
         if ($request->hasFile('cv')) {
             $request->validate([
-                'cv' => 'required|mimes:pdf|max:10240', // Changed from 2048 to 10240 (10MB)
+                'cv' => 'required|mimes:pdf|max:10240', // Diubah dari 2048 ke 10240 (10MB)
             ]);
-            
+
             $file = $request->file('cv');
             $resumePath = $file->store('cv', 'public');
-            
-            // Update user's CV
+
+            // Update CV user
             if ($mahasiswa) {
                 $mahasiswa->cv = $resumePath;
                 $mahasiswa->save();
@@ -121,17 +121,17 @@ class MahasiswaController extends Controller
                 ]);
             }
             $cvUpdated = true;
-        } 
-        // If use_existing_cv is set and user actually has a CV, use the existing CV
+        }
+        // Jika use_existing_cv dipilih dan user memiliki CV, gunakan CV yang ada
         else if ($request->has('use_existing_cv') && $hasExistingCV) {
             $resumePath = $mahasiswa->cv;
         }
-        // If no CV is provided and no existing CV to use, return error
+        // Jika tidak ada CV yang disediakan dan tidak ada CV yang bisa digunakan, kembalikan error
         else if (!$hasExistingCV) {
-            return redirect()->back()->with('error', 'You must upload a CV to apply for this job.');
+            return redirect()->back()->with('error', 'Anda harus mengupload CV untuk melamar pekerjaan ini.');
         }
-        
-        // Create the job application record using the JobApplication model
+
+        // Buat record lamaran pekerjaan menggunakan model JobApplication
         \App\Models\JobApplication::create([
             'job_id' => $jobId,
             'student_id' => $user->id,
@@ -139,11 +139,11 @@ class MahasiswaController extends Controller
             // 'cover_letter' => $request->input('cover_letter', ''),
             'status' => 'pending'
         ]);
-        
-        $message = $cvUpdated ? 
-            'Application submitted successfully with your new CV!' : 
-            'Application submitted successfully with your existing CV!';
-            
+
+        $message = $cvUpdated ?
+            'Lamaran berhasil dikirim dengan CV baru Anda!' :
+            'Lamaran berhasil dikirim dengan CV yang sudah ada!';
+
         return redirect()->back()->with('success', $message);
     }
 }
