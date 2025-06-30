@@ -23,14 +23,14 @@
                     <div>
                         <h4 class="mb-1 fw-semibold">{{ $application->student->name }}</h4>
                         <small class="text-muted">
-                            Dilamar {{ $application->created_at->diffForHumans() }} 
+                            Dilamar {{ $application->created_at->diffForHumans() }}
                             ({{ $application->created_at->format('d M Y') }})
                         </small>
                     </div>
-                    <span class="badge rounded-pill px-3 py-2 fs-6 
-                        {{ $application->status === 'accepted' ? 'bg-success' : 
+                    <span class="badge rounded-pill px-3 py-2 fs-6
+                        {{ $application->status === 'accepted' ? 'bg-success' :
                            ($application->status === 'rejected' ? 'bg-danger' : 'bg-warning text-dark') }}">
-                        {{ $application->status === 'accepted' ? 'Diterima' : 
+                        {{ $application->status === 'accepted' ? 'Diterima' :
                            ($application->status === 'rejected' ? 'Ditolak' : 'Menunggu') }}
                     </span>
                 </div>
@@ -53,8 +53,8 @@
                         <ul class="list-unstyled ps-2 mb-0">
                             @foreach($application->documents as $document)
                             <li class="mb-2">
-                                <a href="{{ asset('storage/' . $document->file_path) }}" 
-                                   target="_blank" 
+                                <a href="{{ asset('storage/' . $document->file_path) }}"
+                                   target="_blank"
                                    class="text-decoration-none fw-medium">
                                     <i class="fas fa-file-pdf text-danger me-2"></i>{{ $document->requirement->document_name }}
                                 </a>

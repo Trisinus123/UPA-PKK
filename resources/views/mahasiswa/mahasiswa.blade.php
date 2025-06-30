@@ -43,13 +43,11 @@
             <!-- User dropdown and logout -->
             <div class="d-flex align-items-center">
                 <div class="dropdown me-2">
-                    <a class="d-flex align-items-center text-black text-decoration-none dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="d-flex align-items-center text-black text-decoration-none " href="#" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         <strong>{{ Auth::user()->name }}</strong>
                         <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}" alt="profile" class="ms-2 rounded-circle" width="40" height="40">
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                        <li><a class="dropdown-item" href="{{ route('mahasiswa.profile') }}">Lihat Profil</a></li>
-                    </ul>
+
                 </div>
                 <form action="{{ route('logout') }}" method="POST" class="d-flex ms-2">
                         @csrf

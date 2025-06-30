@@ -18,7 +18,7 @@
                         <strong>Email:</strong> {{ $user->email }}
                     </div>
                     <div class="mb-3">
-                        <strong>Peran:</strong> 
+                        <strong>Peran:</strong>
                         <span class="badge {{ $roleBadgeClass }} text-white">
                             {{ ucfirst($user->role) }}
                         </span>
@@ -40,7 +40,7 @@
                             <strong>Alamat Perusahaan:</strong> {{ $user->perusahaanProfile->alamat_perusahaan ?? '-' }}
                         </div>
                         <div class="mb-3">
-                            <strong>Website:</strong> 
+                            <strong>Website:</strong>
                             @if($user->perusahaanProfile->website ?? false)
                                 <a href="{{ $user->perusahaanProfile->website }}" target="_blank">
                                     {{ $user->perusahaanProfile->website }}
@@ -50,7 +50,7 @@
                             @endif
                         </div>
                         <div class="mb-3">
-                            <strong>Deskripsi:</strong> 
+                            <strong>Deskripsi:</strong>
                             {{ $user->perusahaanProfile->deskripsi ?? '-' }}
                         </div>
                     @else

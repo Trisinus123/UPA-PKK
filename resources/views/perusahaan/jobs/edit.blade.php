@@ -139,7 +139,7 @@
             });
         }
     });
-
+    
     tinymce.init({
         selector: '#requirements',
         plugins: 'anchor autolink charmap codesample emoticons link lists searchreplace visualblocks wordcount',

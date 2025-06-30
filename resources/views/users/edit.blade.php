@@ -1,97 +1,175 @@
 @extends('layouts.admin')
 
 @section('content')
-<div class="container">
-    <h1>Edit User</h1>
-
-    <form action="{{ route('users.update', $user) }}" method="POST">
+<!-- Modal Edit User (langsung tampil) -->
+<div class="modal fade show" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-modal="true" style="display: block;">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <form action="{{ route('users.update', $user->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
-
-        <div class="mb-3">
-            <label for="name" class="form-label">Name</label>
-            <input type="text" class="form-control" id="name" name="name" value="{{ $user->name }}" required>
+        <div class="modal-header">
+          <h5 class="modal-title" id="editUserModalLabel">Edit User – {{ $user->name }}</h5>
+          <a href="{{ url()->previous() }}" class="btn-close"></a>
         </div>
+        <div class="modal-body">
+          {{-- Name --}}
+          <div class="mb-3">
+            <label for="name" class="form-label">Nama</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              class="form-control"
+              value="{{ old('name', $user->name) }}"
+              required
+            >
+          </div>
 
-        <div class="mb-3">
+          {{-- Email --}}
+          <div class="mb-3">
             <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="email" name="email" value="{{ $user->email }}" required>
-        </div>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              class="form-control"
+              value="{{ old('email', $user->email) }}"
+              required
+            >
+          </div>
 
-        <div class="mb-3">
-            <label for="password" class="form-label">Password (leave blank to keep current)</label>
-            <input type="password" class="form-control" id="password" name="password">
-        </div>
+          {{-- Password --}}
+          <div class="mb-3">
+            <label for="password" class="form-label">
+              Password <small class="text-muted">(kosongkan jika tidak diubah)</small>
+            </label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="form-control"
+            >
+          </div>
 
-        <div class="mb-3">
-            <label for="password_confirmation" class="form-label">Confirm Password</label>
-            <input type="password" class="form-control" id="password_confirmation" name="password_confirmation">
-        </div>
+          {{-- Password Confirmation --}}
+          <div class="mb-3">
+            <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
+            <input
+              type="password"
+              id="password_confirmation"
+              name="password_confirmation"
+              class="form-control"
+            >
+          </div>
 
-        <div class="mb-3">
+          {{-- Role --}}
+          <div class="mb-3">
             <label for="role" class="form-label">Role</label>
-            <select class="form-select" id="role" name="role" required onchange="toggleRoleFields()">
-                <option value="mahasiswa" {{ $user->role == 'mahasiswa' ? 'selected' : '' }}>Mahasiswa</option>
-                <option value="perusahaan" {{ $user->role == 'perusahaan' ? 'selected' : '' }}>Perusahaan</option>
-                <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>Admin</option>
+            <select
+              id="role"
+              name="role"
+              class="form-select"
+              onchange="toggleRoleFields()"
+              required
+            >
+              <option value="mahasiswa" {{ $user->role == 'mahasiswa' ? 'selected' : '' }}>Mahasiswa</option>
+              <option value="perusahaan" {{ $user->role == 'perusahaan' ? 'selected' : '' }}>Perusahaan</option>
+              <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>Admin</option>
             </select>
+          </div>
+
+          {{-- Mahasiswa Fields --}}
+          <div id="mahasiswa-fields" style="display: {{ $user->role == 'mahasiswa' ? 'block' : 'none' }};">
+            <div class="mb-3">
+              <label for="nim" class="form-label">NIM</label>
+              <input
+                type="text"
+                id="nim"
+                name="nim"
+                class="form-control"
+                value="{{ old('nim', $user->mahasiswaProfile->nim ?? '') }}"
+              >
+            </div>
+          </div>
+
+          {{-- Perusahaan Fields --}}
+          <div id="perusahaan-fields" style="display: {{ $user->role == 'perusahaan' ? 'block' : 'none' }};">
+            <div class="mb-3">
+              <label for="alamat_perusahaan" class="form-label">Alamat Perusahaan</label>
+              <input
+                type="text"
+                id="alamat_perusahaan"
+                name="alamat_perusahaan"
+                class="form-control"
+                value="{{ old('alamat_perusahaan', $user->perusahaanProfile->alamat_perusahaan ?? '') }}"
+              >
+            </div>
+            <div class="mb-3">
+              <label for="no_hp" class="form-label">No HP</label>
+              <input
+                type="text"
+                id="no_hp"
+                name="no_hp"
+                class="form-control"
+                value="{{ old('no_hp', $user->no_hp) }}"
+              >
+            </div>
+            <div class="mb-3">
+              <label for="website" class="form-label">Website</label>
+              <input
+                type="text"
+                id="website"
+                name="website"
+                class="form-control"
+                value="{{ old('website', $user->perusahaanProfile->website ?? '') }}"
+              >
+            </div>
+            <div class="mb-3">
+              <label for="deskripsi" class="form-label">Deskripsi</label>
+              <textarea
+                id="deskripsi"
+                name="deskripsi"
+                class="form-control"
+                rows="3"
+              >{{ old('deskripsi', $user->perusahaanProfile->deskripsi ?? '') }}</textarea>
+            </div>
+
+            {{-- Foto Profil --}}
+            <div class="mb-3">
+              <label for="foto" class="form-label">Profile</label>
+              <input type="file" class="form-control" id="foto" name="foto" accept="image/*">
+              @if(!empty($user->perusahaanProfile->foto))
+                <div class="mt-2">
+                  <img src="{{ asset('storage/' . $user->perusahaanProfile->foto) }}" alt="Foto Profil" width="100">
+                </div>
+              @endif
+            </div>
+          </div>
         </div>
 
-        <!-- Mahasiswa Fields -->
-        <div id="mahasiswa-fields" style="display: {{ $user->role == 'mahasiswa' ? 'block' : 'none' }};">
-            <div class="mb-3">
-                <label for="nim" class="form-label">NIM</label>
-                <input type="text" class="form-control" id="nim" name="nim" 
-                       value="{{ $user->mahasiswaProfile->nim ?? '' }}">
-            </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Simpan</button>
+          <a href="{{ url()->previous() }}" class="btn btn-secondary">Batal</a>
         </div>
-
-        <!-- Perusahaan Fields -->
-        <div id="perusahaan-fields" style="display: {{ $user->role == 'perusahaan' ? 'block' : 'none' }};">
-            <div class="mb-3">
-                <label for="alamat_perusahaan" class="form-label">Alamat Perusahaan</label>
-                <input type="text" class="form-control" id="alamat_perusahaan" name="alamat_perusahaan" 
-                       value="{{ $user->perusahaanProfile->alamat_perusahaan ?? '' }}">
-            </div>
-            <div class="mb-3">
-                <label for="website" class="form-label">Website</label>
-                <input type="text" class="form-control" id="website" name="website" 
-                       value="{{ $user->perusahaanProfile->website ?? '' }}">
-            </div>
-            <div class="mb-3">
-                <label for="deskripsi" class="form-label">Deskripsi</label>
-                <textarea class="form-control" id="deskripsi" name="deskripsi">{{ $user->perusahaanProfile->deskripsi ?? '' }}</textarea>
-            </div>
-        </div>
-
-        <div class="mb-3">
-            <label for="no_hp" class="form-label">Phone Number</label>
-            <input type="text" class="form-control" id="no_hp" name="no_hp" value="{{ $user->no_hp }}">
-        </div>
-
-        <button type="submit" class="btn btn-primary">Update User</button>
-    </form>
+      </form>
+    </div>
+  </div>
 </div>
 
+{{-- Script untuk toggle role-dependent fields --}}
 <script>
-    function toggleRoleFields() {
-        const role = document.getElementById('role').value;
-        
-        // Hide all role-specific fields first
-        document.getElementById('mahasiswa-fields').style.display = 'none';
-        document.getElementById('perusahaan-fields').style.display = 'none';
-        
-        // Show fields based on selected role
-        if (role === 'mahasiswa') {
-            document.getElementById('mahasiswa-fields').style.display = 'block';
-        } else if (role === 'perusahaan') {
-            document.getElementById('perusahaan-fields').style.display = 'block';
-        }
+  function toggleRoleFields() {
+    const role = document.getElementById('role').value;
+    document.getElementById('mahasiswa-fields').style.display = 'none';
+    document.getElementById('perusahaan-fields').style.display = 'none';
+    if (role === 'mahasiswa') {
+      document.getElementById('mahasiswa-fields').style.display = 'block';
+    } else if (role === 'perusahaan') {
+      document.getElementById('perusahaan-fields').style.display = 'block';
     }
+  }
 
-    // Initialize fields on page load
-    document.addEventListener('DOMContentLoaded', function() {
-        toggleRoleFields();
-    });
+  document.addEventListener('DOMContentLoaded', toggleRoleFields);
 </script>
 @endsection
